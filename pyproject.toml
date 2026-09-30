@@ -1,0 +1,23 @@
+[project]
+name = "pixelforge"
+version = "0.1.0"
+description = "High-fidelity raster (PNG/JPG) to SVG vector converter powered by VTracer."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.142.2",
+    "pillow>=12.3.0",
+    "python-multipart>=0.0.32",
+    "rich>=15.0.0",
+    "typer>=0.27.2",
+    "uvicorn>=0.54.0",
+    "vtracer>=0.6.15",
+]
+
+[project.scripts]
+pixelforge = "pixelforge.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
