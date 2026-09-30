@@ -6,11 +6,13 @@ import SvgControls from './components/panels/SvgControls.vue';
 import WebpControls from './components/panels/WebpControls.vue';
 import Previewer from './components/workspace/Previewer.vue';
 import { useTheme } from './composables/useTheme';
+import { useLocale } from './composables/useLocale';
 import { convertToSvg, convertToWebp } from './api/client';
 import type { TabMode, SvgParams, WebpParams } from './types';
 
-// Theme management
+// Theme & Locale management
 const { initTheme } = useTheme();
+const { initLocale, t } = useLocale();
 
 // Tab state
 const currentTab = ref<TabMode>('svg');
@@ -99,7 +101,7 @@ async function executeConversion() {
         svgOutputSize.value = res.output_size_bytes || 0;
         durationMs.value = res.duration_ms || 0;
       } else {
-        alert(res.error_message || 'SVG 转换失败');
+        alert(res.error_message || t('common.svgFailed'));
       }
     } else {
       const res = await convertToWebp(currentFile.value, webpParams.value);
@@ -108,12 +110,12 @@ async function executeConversion() {
         webpOutputSize.value = res.output_size_bytes || 0;
         durationMs.value = res.duration_ms || 0;
       } else {
-        alert(res.error_message || 'WebP 压缩失败');
+        alert(res.error_message || t('common.webpFailed'));
       }
     }
   } catch (err: any) {
     console.error('Conversion failed:', err);
-    alert('请求失败，请检查后端服务是否正常运行。');
+    alert(t('common.requestFailed'));
   } finally {
     isProcessing.value = false;
   }
@@ -163,6 +165,7 @@ function handlePaste(e: ClipboardEvent) {
 
 onMounted(() => {
   initTheme();
+  initLocale();
   window.addEventListener('paste', handlePaste);
 });
 
@@ -191,12 +194,12 @@ onUnmounted(() => {
           <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
             <h2 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-2">
               <span>⚙️</span>
-              <span>{{ currentTab === 'svg' ? 'SVG 矢量化参数' : 'WebP 压缩参数' }}</span>
+              <span>{{ currentTab === 'svg' ? t('svg.panelTitle') : t('webp.panelTitle') }}</span>
             </h2>
             <button
               @click="resetParams"
               class="text-xs text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors cursor-pointer">
-              恢复默认
+              {{ t('common.reset') }}
             </button>
           </div>
 
@@ -218,7 +221,7 @@ onUnmounted(() => {
             :disabled="!currentFile || isProcessing"
             class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center space-x-2 cursor-pointer">
             <span v-if="isProcessing" class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            <span>{{ isProcessing ? '正在极速处理中...' : '重新执行转换' }}</span>
+            <span>{{ isProcessing ? t('common.processing') : t('common.execute') }}</span>
           </button>
         </div>
       </section>

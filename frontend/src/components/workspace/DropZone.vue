@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useLocale } from '../../composables/useLocale';
 
 const emit = defineEmits<{
   (e: 'file-selected', file: File): void;
 }>();
 
+const { t } = useLocale();
 const isDragging = ref(false);
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -48,10 +50,10 @@ function triggerClick() {
         📥
       </div>
       <div class="text-sm font-semibold text-slate-800 dark:text-slate-200">
-        拖拽图片到这里，或 <span class="text-indigo-600 dark:text-indigo-400 underline underline-offset-4 font-bold">点击上传</span>
+        {{ t('dropzone.dragHint') }} <span class="text-indigo-600 dark:text-indigo-400 underline underline-offset-4 font-bold">{{ t('dropzone.clickUpload') }}</span>
       </div>
       <p class="text-xs text-slate-500 dark:text-slate-400">
-        支持 PNG / JPG / WebP 等（也支持直接 <kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 text-[10px] text-slate-700 dark:text-slate-300 font-mono">Ctrl+V</kbd> 粘贴）
+        {{ t('dropzone.supportedFormats') }}（<kbd class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded border border-slate-300 dark:border-slate-700 text-[10px] text-slate-700 dark:text-slate-300 font-mono">{{ t('dropzone.pasteHint') }}</kbd>）
       </p>
     </div>
   </div>
